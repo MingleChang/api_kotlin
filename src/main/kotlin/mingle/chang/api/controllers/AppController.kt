@@ -44,7 +44,6 @@ class AppController {
         if (platform != "iOS" && platform != "Android") {
             return Response(code = 500, message = "platform must be 'iOS' or 'Android'")
         }
-        println("Host" + this.appHost)
         val rootDirectoryFile = File(appRootPath)
         val tmpDirectoryFile = File(rootDirectoryFile, "tmp")
         if (!tmpDirectoryFile.exists()) {

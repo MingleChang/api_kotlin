@@ -13,16 +13,21 @@ class ToolController {
     @GetMapping("/tools/getIp")
     fun getIp(request: HttpServletRequest, @RequestParam("ip") ip: String?, @RequestParam("lang") lang: String?): Response {
         return try {
-            val remoteAddress: String = request.remoteAddr
             val ipAddress: String = if (ip.isNullOrBlank()) {
+                var remoteAddress = request.getHeader("x-forwarded-for")
+                if (remoteAddress.isNullOrBlank()) remoteAddress = request.getHeader("Proxy-Client-IP")
+
+                if (remoteAddress.isNullOrBlank()) remoteAddress = request.getHeader("WL-Proxy-Client-IP")
+
+                if (remoteAddress.isNullOrBlank()) remoteAddress = request.remoteAddr
                 remoteAddress
             }else {
-                ip!!
+                ip
             }
             val language: String = if (lang.isNullOrBlank()) {
                 "zh-CN"
             }else {
-                lang!!
+                lang
             }
             val urlString = "http://ip-api.com/json/$ipAddress?lang=$language"
             val restTemplate = RestTemplate()
