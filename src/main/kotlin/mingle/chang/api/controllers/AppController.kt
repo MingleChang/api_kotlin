@@ -9,17 +9,12 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
-import java.io.File
 import java.util.*
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpHeaders
-import java.io.FileInputStream
 import org.springframework.core.io.ClassPathResource
-import java.io.FileReader
-import jdk.nashorn.internal.runtime.ScriptingFunctions.readLine
-import java.io.BufferedReader
-
-
+import sun.misc.IOUtils
+import java.io.*
 
 
 @RestController
@@ -110,8 +105,8 @@ class AppController {
             return ResponseEntity(body, headers, statusCode)
         }catch(e: Exception) {
             val headers = HttpHeaders()
-            val response = Response(code = 404, message = "file not found")
-            return ResponseEntity(response, headers, HttpStatus.NOT_FOUND)
+            val response = Response(code = 400, message = e.toString())
+            return ResponseEntity(response, headers, HttpStatus.BAD_REQUEST)
         }
     }
 
@@ -119,9 +114,8 @@ class AppController {
     fun plist(@PathVariable("id") id: String): ResponseEntity<Any> {
         try {
             val classPathResource = ClassPathResource("manifest_temp.plist")
-
-            val file = classPathResource.file
-            val bufferedReader = BufferedReader(FileReader(file))
+            val inputSteam = classPathResource.inputStream
+            val bufferedReader = BufferedReader(InputStreamReader(inputSteam))
             val content = StringBuilder()
             var line: String? = null
             while ({ line = bufferedReader.readLine();line }() != null) {
@@ -139,8 +133,8 @@ class AppController {
             return ResponseEntity(body, headers, HttpStatus.OK)
         }catch (e: Exception) {
             val headers = HttpHeaders()
-            val response = Response(code = 404, message = "file not found")
-            return ResponseEntity(response, headers, HttpStatus.NOT_FOUND)
+            val response = Response(code = 400, message = e.toString())
+            return ResponseEntity(response, headers, HttpStatus.BAD_REQUEST)
         }
     }
 }
