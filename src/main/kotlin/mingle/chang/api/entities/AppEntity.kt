@@ -40,6 +40,12 @@ data class App (
         @Column(name = "environment")
         var environment: String = "",
 
+        @Column(name = "file_name")
+        var fileName: String = UUID.randomUUID().toString(),
+
+        @Column(name = "download_count")
+        var downloadCount: Long = 0,
+
         @Column(name = "created_date")
         @CreatedDate
         var createdDate: Date? = null,
@@ -48,9 +54,6 @@ data class App (
         @LastModifiedDate
         var modifiedDate: Date? = null
 ){
-        fun fileName() : String {
-                return this.packageId + "_" + this.platform + "_" + this.environment + "_" + this.version + "_" + this.buildVersion
-        }
 
         fun fileAddress(host: String): String {
                 return host + "/app/download/" + this.id

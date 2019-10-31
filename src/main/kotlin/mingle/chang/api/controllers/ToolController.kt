@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest
 
 @RestController
 class ToolController {
-    @GetMapping("/tools/getIp")
+    @GetMapping("/tools/ip")
     fun getIp(request: HttpServletRequest, @RequestParam("ip") ip: String?, @RequestParam("lang") lang: String?): Response {
         return try {
             val ipAddress: String = if (ip.isNullOrBlank()) {
