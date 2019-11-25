@@ -227,7 +227,7 @@ class AppController {
     @GetMapping("/app/plist/{id}")
     fun plist(@PathVariable("id") id: String): ResponseEntity<Any> {
         try {
-            val classPathResource = ClassPathResource("manifest_temp.plist")
+            val classPathResource = ClassPathResource("public/manifest_temp.plist")
             val inputSteam = classPathResource.inputStream
             val bufferedReader = BufferedReader(InputStreamReader(inputSteam))
             val content = StringBuilder()
