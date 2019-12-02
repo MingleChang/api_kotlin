@@ -1,6 +1,7 @@
 package mingle.chang.api.controllers
 
 import mingle.chang.api.models.Response
+import mingle.chang.api.utils.Utils
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -14,13 +15,7 @@ class ToolController {
     fun getIp(request: HttpServletRequest, @RequestParam("ip") ip: String?, @RequestParam("lang") lang: String?): Response {
         return try {
             val ipAddress: String = if (ip.isNullOrBlank()) {
-                var remoteAddress = request.getHeader("x-forwarded-for")
-                if (remoteAddress.isNullOrBlank()) remoteAddress = request.getHeader("Proxy-Client-IP")
-
-                if (remoteAddress.isNullOrBlank()) remoteAddress = request.getHeader("WL-Proxy-Client-IP")
-
-                if (remoteAddress.isNullOrBlank()) remoteAddress = request.remoteAddr
-                remoteAddress
+                Utils.getRemoteAddress(request)
             }else {
                 ip
             }
