@@ -206,13 +206,18 @@ class AppController {
                 val response = Response(code = 404, message = "file not found")
                 return ResponseEntity(response, headers, HttpStatus.OK)
             }
-
+            var extension: String = ""
+            if (app.platform == "iOS") {
+                extension =".ipa"
+            }else if (app.platform == "Android") {
+                extension = ".apk"
+            }
             var body: ByteArray? = null
             val stream = FileInputStream(file)
             body = ByteArray(stream.available())
             stream.read(body)
             val headers = HttpHeaders()
-            headers.add("Content-Disposition", "attchement;filename=" + file.name)
+            headers.add("Content-Disposition", "attchement;filename=" + file.name + extension)
             val statusCode = HttpStatus.OK
             app.downloadCount++
             this.appRespository.save(app)
