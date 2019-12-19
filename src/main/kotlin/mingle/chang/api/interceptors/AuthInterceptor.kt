@@ -24,6 +24,9 @@ class AuthInterceptor : HandlerInterceptor {
     }
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
+        if (request.method.toUpperCase() == "GET") {
+            return super.preHandle(request, response, handler)
+        }
         val tokenId = request.getHeader("token")
         val (success, code, message) = TokenUtils.vaildTokenId(tokenId, this.tokenRespository)
         return if (!success) {

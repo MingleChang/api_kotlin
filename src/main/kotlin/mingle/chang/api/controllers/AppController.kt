@@ -47,105 +47,105 @@ class AppController {
                 }
                 this.appRespository.delete(app)
             }
-        }catch (e: Exception) {
+        } catch (e: Exception) {
 
         }
     }
 
     @GetMapping("/app/packageids")
-    fun getPackageIds() : Response {
+    fun getPackageIds(): Response {
         return try {
             val list = this.appRespository.findGroupPackageId()
             val response = Response(list)
             response
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             val response = Response(code = 400, message = e.toString())
             response
         }
     }
 
     @GetMapping("/app/platforms")
-    fun getPlatforms(@RequestParam("packageid") packageId : String) : Response {
+    fun getPlatforms(@RequestParam("packageid") packageId: String): Response {
         return try {
             val list = this.appRespository.findGroupPlatformByPackageId(packageId)
             val response = Response(list)
             response
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             val response = Response(code = 400, message = e.toString())
             response
         }
     }
 
     @GetMapping("/app/environments")
-    fun getEnvironments(@RequestParam("packageid") packageId : String, @RequestParam("platform") platform : String) : Response {
+    fun getEnvironments(@RequestParam("packageid") packageId: String, @RequestParam("platform") platform: String): Response {
         return try {
             val list = this.appRespository.findGroupEnvironmentByPackageIdAndPlatform(packageId, platform)
             val response = Response(list)
             response
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             val response = Response(code = 400, message = e.toString())
             response
         }
     }
 
     @GetMapping("/app/versions")
-    fun getVersions(@RequestParam("packageid") packageId : String, @RequestParam("platform") platform : String, @RequestParam("environment") environment : String) : Response {
+    fun getVersions(@RequestParam("packageid") packageId: String, @RequestParam("platform") platform: String, @RequestParam("environment") environment: String): Response {
         return try {
             val list = this.appRespository.findGroupVersionByPackageIdAndPlatformAndEnvironment(packageId, platform, environment)
             val response = Response(list)
             response
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             val response = Response(code = 400, message = e.toString())
             response
         }
     }
 
     @GetMapping("/app/list")
-    fun getApps(@RequestParam("packageid") packageId : String?, @RequestParam("platform") platform : String?, @RequestParam("environment") environment : String?, @RequestParam("version") version : String?) : Response {
+    fun getApps(@RequestParam("packageid") packageId: String?, @RequestParam("platform") platform: String?, @RequestParam("environment") environment: String?, @RequestParam("version") version: String?): Response {
         return try {
             val packageId = if (packageId.isNullOrBlank()) {
                 ""
-            }else {
+            } else {
                 packageId
             }
             val platform = if (platform.isNullOrBlank()) {
                 ""
-            }else {
+            } else {
                 platform
             }
             val environment = if (environment.isNullOrBlank()) {
                 ""
-            }else {
+            } else {
                 environment
             }
             val version = if (version.isNullOrBlank()) {
                 ""
-            }else {
+            } else {
                 version
             }
             val list = this.appRespository.findByPackageIdAndPlatformAndEnvironmentAndVersion(packageId, platform, environment, version)
             val response = Response(list)
             response
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             val response = Response(code = 400, message = e.toString())
             response
         }
     }
 
     @GetMapping("/app/{id}")
-    fun getAppById(@PathVariable("id") id: String) : Response {
+    fun getAppById(@PathVariable("id") id: String): Response {
         return try {
             val app = this.appRespository.getOne(id)
             val response = Response(app)
             response
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             val response = Response(code = 400, message = e.toString())
             response
         }
     }
 
     @PostMapping("/app/upload")
-    fun upload(@RequestParam("file") file: MultipartFile, @RequestParam("platform") platform: String, @RequestParam("environment") environment: String) : Response {
+    fun upload(@RequestParam("file") file: MultipartFile, @RequestParam("platform") platform: String, @RequestParam("environment") environment: String): Response {
         val platform = platform
         val environment = environment.toUpperCase()
         if (platform != "iOS" && platform != "Android") {
@@ -171,7 +171,7 @@ class AppController {
             app.buildVersion = result["buildVersion"].toString()
             app.platform = platform
             app.environment = environment
-        }else {
+        } else {
             val result = AppUtils.parseApkFile(tmpFile) ?: return Response(code = 500, message = "parse failed")
             app.packageId = result["bundleId"].toString()
             app.name = result["name"].toString()
@@ -208,8 +208,8 @@ class AppController {
             }
             var extension: String = ""
             if (app.platform == "iOS") {
-                extension =".ipa"
-            }else if (app.platform == "Android") {
+                extension = ".ipa"
+            } else if (app.platform == "Android") {
                 extension = ".apk"
             }
             var body: ByteArray? = null
@@ -222,7 +222,7 @@ class AppController {
             app.downloadCount++
             this.appRespository.save(app)
             return ResponseEntity(body, headers, statusCode)
-        }catch(e: Exception) {
+        } catch (e: Exception) {
             val headers = HttpHeaders()
             val response = Response(code = 400, message = e.toString())
             return ResponseEntity(response, headers, HttpStatus.OK)
@@ -250,7 +250,7 @@ class AppController {
             val headers = HttpHeaders()
             headers.set("Content-Type", "application/octet-stream")
             return ResponseEntity(body, headers, HttpStatus.OK)
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             val headers = HttpHeaders()
             val response = Response(code = 400, message = e.toString())
             return ResponseEntity(

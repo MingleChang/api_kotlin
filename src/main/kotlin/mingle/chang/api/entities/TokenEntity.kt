@@ -24,7 +24,7 @@ data class Token (
 
         @ManyToOne(cascade = [CascadeType.ALL])
         @JoinColumn(name = "user_id", foreignKey = ForeignKey(name = "TOKEN_USER_ID_FK"))
-        var user: User,
+        var user: User? = null,
 
         @Column(name = "invalid")
         var invalid: Boolean = false,
