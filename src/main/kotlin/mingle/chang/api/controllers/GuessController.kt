@@ -34,11 +34,12 @@ class GuessController  {
     @GetMapping("/guess/list")
     fun guessList(@RequestParam("category") category: String, @RequestParam("language") language: String, @PageableDefault(size = 10, page = 0, sort=["modifiedDate"], direction = Direction.DESC) pageable: Pageable) : Response {
         return try {
-            val guesses = this.guessRespository.findAllByCategoryAndId_LanguagePageable(category, language, pageable)
+            val guesses = this.guessRespository.findAllByCategoryAndLanguagePageable(category, language, pageable)
             Response(guesses)
         }catch (e: Exception) {
             Response(code = 400, message = e.toString())
         }
+        this.guessRespository.deleteAll()
     }
 
     @GetMapping("/guess/categories")
@@ -58,6 +59,16 @@ class GuessController  {
             val cate: String = category ?:""
             val result = this.guessRespository.findGroupLanguageByCategory(cate)
             Response(result)
+        }catch (e: Exception) {
+            Response(code = 400, message = e.toString())
+        }
+    }
+
+    @PostMapping("/guess/delete")
+    fun deleteGuess(@RequestParam("word") word: String, @RequestParam("language") language: String): Response {
+        return  try {
+            this.guessRespository.deleteByWordAndLanguage(word, language)
+            Response()
         }catch (e: Exception) {
             Response(code = 400, message = e.toString())
         }
