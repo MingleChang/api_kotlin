@@ -22,9 +22,10 @@ class GuessController  {
     }
 
     @GetMapping("/guess/news")
-    fun guessNews(@RequestParam("version") version: String): Response {
+    fun guessNews(@RequestParam("version") version: String?): Response {
         return try {
-            val guesses = this.guessRespository.findAllByVersionAfter(version)
+            val ver: String = version ?:""
+            val guesses = this.guessRespository.findAllByVersionAfter(ver)
             Response(guesses)
         }catch (e: Exception) {
             Response(code = 400, message = e.toString())
@@ -32,9 +33,11 @@ class GuessController  {
     }
 
     @GetMapping("/guess/list")
-    fun guessList(@RequestParam("category") category: String, @RequestParam("language") language: String, @PageableDefault(size = 10, page = 0, sort=["modifiedDate"], direction = Direction.DESC) pageable: Pageable) : Response {
+    fun guessList(@RequestParam("category") category: String?, @RequestParam("language") language: String?, @PageableDefault(size = 10, page = 0, sort=["modifiedDate"], direction = Direction.DESC) pageable: Pageable) : Response {
         return try {
-            val guesses = this.guessRespository.findAllByCategoryAndLanguagePageable(category, language, pageable)
+            val cate: String = category ?:""
+            val lan: String = language ?:""
+            val guesses = this.guessRespository.findAllByCategoryAndLanguagePageable(cate, lan, pageable)
             Response(guesses)
         }catch (e: Exception) {
             Response(code = 400, message = e.toString())
