@@ -41,6 +41,9 @@ data class User(
         @Column(name = "email")
         var email: String = "",
 
+        @Column(name = "admin", nullable = false)
+        var admin: Boolean = false,
+
         @Column(name = "created_date")
         @CreatedDate
         var createdDate: Date? = null,

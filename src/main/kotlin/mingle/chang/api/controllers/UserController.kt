@@ -47,6 +47,7 @@ class UserController  {
             result["nickName"] = resultUser.nickName
             result["mobile"] = resultUser.mobile
             result["email"] = resultUser.email
+            result["admin"] = user.admin
             return Response(result)
         }catch (e: Exception) {
             return Response(code = 400, message = e.toString())
@@ -70,6 +71,7 @@ class UserController  {
             result["nickName"] = user.nickName
             result["mobile"] = user.mobile
             result["email"] = user.email
+            result["admin"] = user.admin
             return Response(result)
         }catch (e: Exception) {
             return Response(code = 400, message = e.toString())
