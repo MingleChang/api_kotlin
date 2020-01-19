@@ -1,6 +1,7 @@
 package mingle.chang.api.controllers
 
 import mingle.chang.api.entities.Guess
+import mingle.chang.api.entities.GuessKey
 import mingle.chang.api.interfaces.GuessRespository
 import mingle.chang.api.models.Response
 import org.springframework.beans.factory.annotation.Autowired
@@ -33,11 +34,12 @@ class GuessController  {
     }
 
     @GetMapping("/guess/list")
-    fun guessList(@RequestParam("category") category: String?, @RequestParam("language") language: String?, @PageableDefault(size = 10, page = 0, sort=["modifiedDate"], direction = Direction.DESC) pageable: Pageable) : Response {
+    fun guessList(@RequestParam("word") word: String?, @RequestParam("category") category: String?, @RequestParam("language") language: String?, @PageableDefault(size = 10, page = 0, sort=["modifiedDate"], direction = Direction.DESC) pageable: Pageable) : Response {
         return try {
+            val wd: String = word ?:""
             val cate: String = category ?:""
             val lan: String = language ?:""
-            val guesses = this.guessRespository.findAllByCategoryAndLanguagePageable(cate, lan, pageable)
+            val guesses = this.guessRespository.findAllByWordAndCategoryAndLanguagePageable(wd, cate, lan, pageable)
             Response(guesses)
         }catch (e: Exception) {
             Response(code = 400, message = e.toString())
@@ -70,7 +72,10 @@ class GuessController  {
     @PostMapping("/guess/delete")
     fun deleteGuess(@RequestParam("word") word: String, @RequestParam("language") language: String): Response {
         return  try {
-            this.guessRespository.deleteByWordAndLanguage(word, language)
+            val guessKey = GuessKey()
+            guessKey.word = word
+            guessKey.language = language
+            this.guessRespository.deleteById(guessKey)
             Response()
         }catch (e: Exception) {
             Response(code = 400, message = e.toString())
