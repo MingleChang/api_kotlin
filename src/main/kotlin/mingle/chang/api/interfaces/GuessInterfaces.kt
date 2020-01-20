@@ -11,7 +11,7 @@ interface GuessRespository : JpaRepository<Guess, GuessKey> {
     @Query("SELECT new map(g.id.word as word, g.id.language as language, g.category as category, g.version as version) FROM Guess g WHERE g.version>:version")
     fun findAllByVersionAfter(version: String) : List<Map<String, Any>>
 
-    @Query("SELECT new map(g.id.word as word, g.id.language as language, g.category as category, g.version as version) FROM Guess g WHERE (:word='' OR g.id.word LIKE %:word%) AND (g.category=:category OR :category='') AND (g.id.language=:language OR :language='')", countQuery = "SELECT COUNT(g) FROM Guess g WHERE (g.category=:category OR :category='') AND (g.id.language=:language OR :language='')" )
+    @Query("SELECT new map(g.id.word as word, g.id.language as language, g.category as category, g.version as version) FROM Guess g WHERE (:word='' OR g.id.word LIKE %:word%) AND (g.category=:category OR :category='') AND (g.id.language=:language OR :language='')", countQuery = "SELECT COUNT(g) FROM Guess g WHERE (:word='' OR g.id.word LIKE %:word%) AND (g.category=:category OR :category='') AND (g.id.language=:language OR :language='')" )
     fun findAllByWordAndCategoryAndLanguagePageable(word:String,category: String, language: String, pageable: Pageable) : Page<Map<String, Any>>
 
     @Query("SELECT g.category FROM Guess g WHERE (:language='' OR g.id.language=:language) GROUP BY g.category")
